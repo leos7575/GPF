@@ -16,7 +16,6 @@ export default function App() {
       setError('Por favor, ingresa tu contraseña.');
     } else {
       setError(''); // Limpia el mensaje de error
-      // Aquí puedes manejar el inicio de sesión
       Alert.alert('Inicio de sesión exitoso');
     }
   };
