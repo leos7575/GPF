@@ -16,7 +16,7 @@ Asegúrate de tener instaladas las siguientes herramientas:
    ```bash
    git clone https://github.com/tuusuario/nombre-del-repositorio.git
    cd nombre-del-repositorio
-
+```bash
 2. Instala las siguientes dependencias:
    - npm install
    - npm install @react-navigation/native @react-navigation/native-stack react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context react-native-vector-icons
