@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Text, Image, ImageBackground, Alert} from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text, Image, ImageBackground, Alert } from 'react-native';
 import SignupScreen from './CrearCuenta';
 import ForgotPasswordScreen from './OlvideContraseña';
+import Dashboard from './Home'; // Asegúrate de que el archivo se llame 'Home.js' o lo que corresponda
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('login'); // Estado para manejar la pantalla actual
@@ -17,6 +18,7 @@ export default function App() {
     } else {
       setError(''); // Limpia el mensaje de error
       Alert.alert('Inicio de sesión exitoso');
+      setCurrentScreen('dashboard'); // Cambia a la pantalla de Dashboard
     }
   };
 
@@ -24,6 +26,11 @@ export default function App() {
     setCurrentScreen(screen); // Cambia a la pantalla indicada
     setError(''); // Limpia el mensaje de error al cambiar de pantalla
   };
+
+  // Verifica si la pantalla actual es el Dashboard
+  if (currentScreen === 'dashboard') {
+    return <Dashboard />; // Renderiza el componente Dashboard
+  }
 
   return (
     <ImageBackground 
