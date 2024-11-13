@@ -6,21 +6,46 @@ export default function SignupScreen({ onBack }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
-  const [error, setError] = useState(''); // Estado para manejar mensajes de error
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
 
   const handleSignup = () => {
+    let valid = true;
+
     if (!email) {
-      setError('Por favor, ingresa tu correo electrónico.');
-    } else if (!password) {
-      setError('Por favor, ingresa tu contraseña.');
-    } else if (!confirmPassword) {
-      setError('Por favor, confirma tu contraseña.');
-    } else if (!phone) {
-      setError('Por favor, ingresa tu número de teléfono.');
-    } else if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden.');
+      setEmailError('Por favor, ingresa tu correo electrónico.');
+      valid = false;
     } else {
-      setError(''); // Limpia el mensaje de error
+      setEmailError('');
+    }
+
+    if (!password) {
+      setPasswordError('Por favor, ingresa tu contraseña.');
+      valid = false;
+    } else {
+      setPasswordError('');
+    }
+
+    if (!confirmPassword) {
+      setConfirmPasswordError('Por favor, confirma tu contraseña.');
+      valid = false;
+    } else if (password !== confirmPassword) {
+      setConfirmPasswordError('Las contraseñas no coinciden.');
+      valid = false;
+    } else {
+      setConfirmPasswordError('');
+    }
+
+    if (!phone) {
+      setPhoneError('Por favor, ingresa tu número de teléfono.');
+      valid = false;
+    } else {
+      setPhoneError('');
+    }
+
+    if (valid) {
       Alert.alert('Registro exitoso', `¡Bienvenido, ${email}!`);
     }
   };
@@ -39,7 +64,7 @@ export default function SignupScreen({ onBack }) {
         </View>
         <View style={styles.formContainer}>
           <Text style={styles.title}>Crear Cuenta</Text>
-          
+
           <TextInput
             style={styles.input}
             placeholder="Número de Teléfono"
@@ -48,8 +73,8 @@ export default function SignupScreen({ onBack }) {
             keyboardType="phone-pad"
             autoCapitalize="none"
           />
-          {error.includes('teléfono') && <Text style={styles.errorText}>{error}</Text>} {/* Mensaje de error para teléfono */}
-          
+          {phoneError ? <Text style={styles.errorText}>{phoneError}</Text> : null}
+
           <TextInput
             style={styles.input}
             placeholder="Correo Electrónico"
@@ -58,8 +83,8 @@ export default function SignupScreen({ onBack }) {
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          {error.includes('correo') && <Text style={styles.errorText}>{error}</Text>} {/* Mensaje de error para correo */}
-          
+          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+
           <TextInput
             style={styles.input}
             placeholder="Contraseña"
@@ -67,8 +92,8 @@ export default function SignupScreen({ onBack }) {
             onChangeText={setPassword}
             secureTextEntry
           />
-          {error.includes('contraseña') && <Text style={styles.errorText}>{error}</Text>} {/* Mensaje de error para contraseña */}
-          
+          {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+
           <TextInput
             style={styles.input}
             placeholder="Confirmar Contraseña"
@@ -76,12 +101,12 @@ export default function SignupScreen({ onBack }) {
             onChangeText={setConfirmPassword}
             secureTextEntry
           />
-          {error.includes('confirmar') && <Text style={styles.errorText}>{error}</Text>} {/* Mensaje de error para confirmar contraseña */}
-          
+          {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}
+
           <TouchableOpacity style={styles.button} onPress={handleSignup}>
             <Text style={styles.buttonText}>Crear Cuenta</Text>
           </TouchableOpacity>
-          
+
           <View style={styles.linksContainer}>
             <Text style={styles.link} onPress={onBack}>
               Ya tengo cuenta
@@ -92,6 +117,7 @@ export default function SignupScreen({ onBack }) {
     </ImageBackground>
   );
 }
+
 
 const styles = StyleSheet.create({
   background: {
@@ -151,7 +177,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   input: {
-    width: '100%',
+    width: 200,
     height: 50,
     borderWidth: 2,
     borderRadius: 8,
@@ -161,7 +187,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   button: {
-    width: '65%',
+    width: 130,
     height: 50,
     backgroundColor: '#007BFF',
     borderRadius: 18,

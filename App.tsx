@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet, Text, Image, ImageBackground, Alert } from 'react-native';
 import SignupScreen from './CrearCuenta';
 import ForgotPasswordScreen from './OlvideContraseña';
-import Dashboard from './Home'; // Asegúrate de que el archivo se llame 'Home.js' o lo que corresponda
+import Dashboard from './Home';
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState('login'); // Estado para manejar la pantalla actual
-  const [email, setEmail] = useState(''); // Estado para el correo electrónico
-  const [password, setPassword] = useState(''); // Estado para la contraseña
-  const [error, setError] = useState(''); // Estado para manejar mensajes de error
+  const [currentScreen, setCurrentScreen] = useState('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = () => {
     if (!email) {
@@ -16,20 +16,20 @@ export default function App() {
     } else if (!password) {
       setError('Por favor, ingresa tu contraseña.');
     } else {
-      setError(''); // Limpia el mensaje de error
+      setError('');
       Alert.alert('Inicio de sesión exitoso');
-      setCurrentScreen('dashboard'); // Cambia a la pantalla de Dashboard
+      setCurrentScreen('dashboard');
     }
   };
 
   const handleBack = (screen) => {
-    setCurrentScreen(screen); // Cambia a la pantalla indicada
-    setError(''); // Limpia el mensaje de error al cambiar de pantalla
+    setCurrentScreen(screen);
+    setError('');
   };
 
-  // Verifica si la pantalla actual es el Dashboard
+  // Renderiza la pantalla de Dashboard si `currentScreen` es 'dashboard'
   if (currentScreen === 'dashboard') {
-    return <Dashboard />; // Renderiza el componente Dashboard
+    return <Dashboard />;
   }
 
   return (
@@ -39,9 +39,9 @@ export default function App() {
     >
       <View style={styles.container}>
         {currentScreen === 'signup' ? (
-          <SignupScreen onBack={() => handleBack('login')} /> // Regresa a Iniciar Sesión
+          <SignupScreen onBack={() => handleBack('login')} />
         ) : currentScreen === 'forgotPassword' ? (
-          <ForgotPasswordScreen onBack={() => handleBack('login')} /> // Regresa a Iniciar Sesión
+          <ForgotPasswordScreen onBack={() => handleBack('login')} />
         ) : (
           <View style={styles.formContainer}>
             <Image 
@@ -51,23 +51,27 @@ export default function App() {
             <TextInput
               style={[styles.input]}
               placeholder="Correo Electrónico"
-              onChangeText={setEmail} // Actualiza el estado del correo
+              onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
             />
-            {error.includes('correo') && <Text style={styles.errorText}>{error}</Text>} {/* Mensaje de error para correo */}
+            {/* Mensaje de error para el campo de correo */}
+            {error.includes('correo') && <Text style={styles.errorText}>{error}</Text>}
             
             <TextInput
-              style={[styles.input]}
+              style={[styles.input2]}
               placeholder="Contraseña"
-              onChangeText={setPassword} // Actualiza el estado de la contraseña
+              onChangeText={setPassword}
               secureTextEntry
             />
-            {error.includes('contraseña') && <Text style={styles.errorText}>{error}</Text>} {/* Mensaje de error para contraseña */}
+            {/* Mensaje de error para el campo de contraseña */}
+            {error.includes('contraseña') && <Text style={styles.errorText}>{error}</Text>}
             
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
               <Text style={styles.buttonText}>Iniciar Sesión</Text>
             </TouchableOpacity>
+            
+            {/* Enlaces a otras pantallas */}
             <Text style={styles.link} onPress={() => handleBack('signup')}>
               Crear Cuenta
             </Text>
@@ -118,7 +122,17 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   input: {
-    width: '100%',
+    width: 200,
+    height: 50,
+    borderWidth: 2,
+    borderRadius: 8,
+    marginBottom: 16,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#000',
+  },
+  input2: {
+    width: 200,
     height: 50,
     borderWidth: 2,
     borderRadius: 8,
@@ -128,7 +142,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   button: {
-    width: '65%',
+    width: 130,
     height: 50,
     backgroundColor: '#007BFF',
     borderRadius: 18,
@@ -151,6 +165,6 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 10,
     textAlign: 'left',
-    width: '100%', // Asegura que el mensaje ocupe todo el ancho del campo
+    width: '100%',
   },
 });

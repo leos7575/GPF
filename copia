@@ -1,0 +1,174 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Alert, ScrollView } from 'react-native';
+import axios from 'axios';
+import * as Progress from 'react-native-progress';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+
+const Dashboard = () => {
+  const [datos, setDatos] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchDatos = () => {
+    axios.get('http://192.168.227.251:3000/api/datos')
+      .then((response) => {
+        setDatos(response.data); 
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        Alert.alert('Error', 'No se pudieron cargar los datos. Verifica tu conexión y el servidor.');
+      });
+  };
+
+  useEffect(() => {
+    fetchDatos();
+    const intervalo = setInterval(() => {
+      fetchDatos();
+    }, 1000);
+    return () => clearInterval(intervalo);
+  }, []);
+
+  if (isLoading) {
+    return <Text style={styles.loadingText}>Cargando datos...</Text>;
+  }
+
+  const datoMasReciente = datos && datos.length > 0 ? datos[datos.length - 1] : null;
+
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Monitoreo de Salud</Text>
+
+      {datoMasReciente ? (
+        <View style={styles.card}>
+          <View style={styles.progressContainer}>
+            <View style={styles.dataContainer}>
+              <Text style={styles.dataLabel}>Temperatura</Text>
+              <Text style={styles.dataValue}>{datoMasReciente.temperatura}°C</Text>
+              <Progress.Circle 
+                progress={datoMasReciente.temperatura / 40} 
+                size={80}
+                color="#0ff"
+                thickness={8}
+                unfilledColor="#444"
+                strokeCap="round"
+                showsText={true}
+                direction="counter-clockwise"
+              />
+            </View>
+
+            <View style={styles.dataContainer}>
+              <Text style={styles.dataLabel}>Pulso</Text>
+              <Text style={styles.dataValue}>{datoMasReciente.pulso} bpm</Text>
+              <Progress.Circle 
+                progress={datoMasReciente.pulso / 180}
+                size={80}
+                color="#f80000"
+                thickness={8}
+                unfilledColor="#444"
+                strokeCap="round"
+                showsText={true}
+                direction="counter-clockwise"
+              />
+            </View>
+
+            <View style={styles.dataContainer}>
+              <Text style={styles.dataLabel}>Oxigenación</Text>
+              <Text style={styles.dataValue}>{datoMasReciente.oxigeno}%</Text>
+              <Progress.Circle 
+                progress={datoMasReciente.oxigeno / 100}
+                size={80}
+                color="#0f0"
+                thickness={8}
+                unfilledColor="#444"
+                strokeCap="round"
+                showsText={true}
+                direction="counter-clockwise"
+              />
+            </View>
+          </View>
+        </View>
+      ) : (
+        <Text style={styles.noDataText}>No hay datos disponibles.</Text>
+      )}
+
+      <View style={styles.mapContainer}>
+        <MapContainer 
+          center={[datoMasReciente?.lat || 21.818999, datoMasReciente?.lng || -102.764098]} 
+          zoom={13} 
+          style={styles.mapStyle}
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <Marker position={[datoMasReciente?.lat || 21.818999, datoMasReciente?.lng || -102.764098]}>
+            <Popup>
+              <Text>Ubicación de los datos</Text>
+            </Popup>
+          </Marker>
+        </MapContainer>
+      </View>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#1a1a1a',
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: '600',
+    color: '#e0e0e0',
+    textAlign: 'center',
+    marginVertical: 16,
+  },
+  loadingText: {
+    fontSize: 18,
+    textAlign: 'center',
+    color: '#888',
+    marginTop: 20,
+  },
+  card: {
+    backgroundColor: '#2a2a2a',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 16,
+  },
+  progressContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  dataContainer: {
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  dataLabel: {
+    fontSize: 16,
+    color: '#ccc',
+    marginBottom: 4,
+  },
+  dataValue: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#e0e0e0',
+    marginBottom: 8,
+  },
+  noDataText: {
+    textAlign: 'center',
+    color: '#888',
+    fontSize: 16,
+    marginVertical: 20,
+  },
+  mapContainer: {
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+  mapStyle: {
+    height: 400,
+    width: '100%',
+  },
+});
+
+export default Dashboard;

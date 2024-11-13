@@ -5,13 +5,15 @@ export default function ForgotPasswordScreen({ onBack }) {
   const [email, setEmail] = useState('');
   const [emailFocused, setEmailFocused] = useState(true);
   const [error, setError] = useState('');
+
   const handleResetPassword = () => {
     if (!email) {
-        setError('Por favor, ingresa tu correo electrónico.');
-      }else {
-        setError(''); // Limpia el mensaje de error
-        Alert.alert('Registro exitoso', `¡Bienvenido, ${email}!`);
-      }
+      setError('Por favor, ingresa tu correo electrónico.');
+    } else {
+      setError(''); // Limpia el mensaje de error
+      Alert.alert('Registro exitoso', `¡Bienvenido, ${email}!`);
+    }
+    console.log(error); // Para monitorear el valor de `error`
   };
 
   return (
@@ -40,7 +42,9 @@ export default function ForgotPasswordScreen({ onBack }) {
             onFocus={() => setEmailFocused(false)}
             onBlur={() => setEmailFocused(true)}
           />
-          {error.includes('correo') && <Text style={styles.errorText}>{error}</Text>} {/* Mensaje de error para correo */}
+          {/* Mensaje de error sin filtrar por palabra clave */}
+          {error && <Text style={styles.errorText}>{error}</Text>}
+
           <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
             <Text style={styles.buttonText}>Enviar</Text>
           </TouchableOpacity>
@@ -120,7 +124,7 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   input: {
-    width: '100%',
+    width: 200,
     height: 50,
     borderWidth: 2,
     borderRadius: 8,
@@ -130,7 +134,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   button: {
-    width: '65%',
+    width: 100,
     height: 50,
     backgroundColor: '#007BFF',
     borderRadius: 18,
@@ -157,6 +161,6 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 10,
     textAlign: 'left',
-    width: '100%', // Asegura que el mensaje ocupe todo el ancho del campo
+    width: '100%',
   },
 });
